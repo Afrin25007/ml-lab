@@ -1,0 +1,30 @@
+PROGRAM:
+
+CPT_result = {
+    ('High','High'): 0.95,
+    ('High','Low'): 0.80,
+    ('Low','High'): 0.60,
+    ('Low','Low'): 0.20
+}
+def predict_result(study_hours, attendance):
+    p_pass = CPT_result[(study_hours, attendance)]
+    p_fail = 1 - p_pass
+    print(f"P(Result=Pass) = {p_pass}")
+    print(f"P(Result=Fail) = {p_fail}")
+    print("Prediction:", "PASS" if p_pass > 0.5 else "FAIL")
+predict_result('High','High')  
+predict_result('Low','Low')    
+predict_result('High','Low')  
+
+
+OUTPUT:
+
+P(Result=Pass) = 0.95
+P(Result=Fail) = 0.050000000000000044
+Prediction: PASS
+P(Result=Pass) = 0.2
+P(Result=Fail) = 0.8
+Prediction: FAIL
+P(Result=Pass) = 0.8
+P(Result=Fail) = 0.19999999999999996
+Prediction: PASS
