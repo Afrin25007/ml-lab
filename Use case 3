@@ -1,0 +1,36 @@
+program :
+
+import numpy as np
+from tensorflow.keras.datasets import mnist
+(Xtr,ytr),(Xte,yte)=mnist.load_data()
+Xtr,Xte=Xtr.reshape(-1,784)/255,Xte.reshape(-1,784)/255
+ytr,yte=np.eye(10)[ytr],np.eye(10)[yte]
+np.random.seed(0)
+W1,W2=np.random.randn(784,64)*.01,np.random.randn(64,10)*.01
+b1,b2=np.zeros((1,64)),np.zeros((1,10))
+relu=lambda x:np.maximum(0,x)
+def softmax(x):
+    e=np.exp(x-np.max(x,axis=1,keepdims=True))
+    return e/np.sum(e,axis=1,keepdims=True)
+for _ in range(10):
+    Z1=Xtr@W1+b1; A1=relu(Z1)
+    Z2=A1@W2+b2; A2=softmax(Z2)  
+    d2=A2-ytr
+    d1=(d2@W2.T)*(Z1>0)
+    W2-=0.1*A1.T@d2/len(Xtr)
+    b2-=0.1*d2.mean(0,keepdims=True)
+    W1-=0.1*Xtr.T@d1/len(Xtr)
+    b1-=0.1*d1.mean(0,keepdims=True)
+sample = Xte[0:1]
+probs = softmax(relu(sample@W1+b1)@W2+b2)
+print("Softmax Output (10 neurons):")
+print(probs)     
+print("Predicted Digit:", np.argmax(probs))
+
+Output:
+
+Softmax Output (10 neurons):
+[[0.09935069 0.10059278 0.10012046 0.1007282  0.09974969 0.09845646
+  0.09999315 0.10072698 0.10014637 0.10013522]]
+Predicted Digit: 3
+
