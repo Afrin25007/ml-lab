@@ -1,0 +1,28 @@
+Program:
+
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import GaussianNB
+emails = [
+    "Win money now",
+    "Limited offer claim prize",
+    "Meeting at 10am tomorrow",
+    "Project discussion schedule"
+]
+labels = [1, 1, 0, 0] 
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(emails).toarray()
+y = np.array(labels)
+model = GaussianNB()
+model.fit(X, y)
+test_email = ["Win a free prize now"]
+test_vector = vectorizer.transform(test_email).toarray()
+prediction = model.predict(test_vector)
+if prediction[0] == 1:
+    print("Prediction Pass = Yes") 
+else:
+    print("Prediction Pass = No")    
+
+Output:
+
+Prediction Pass = Yes
