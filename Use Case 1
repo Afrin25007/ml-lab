@@ -1,0 +1,37 @@
+PROGRAM:
+
+data = [
+    ['High', 'Yes', 'Yes', 'Mild', 'Yes'],
+    ['High', 'Yes', 'No',  'Mild', 'Yes'],
+    ['Normal', 'Yes', 'Yes', 'Mild', 'No'],
+    ['High', 'No',  'Yes', 'Mild', 'Yes']
+]
+
+X = [row[:-1] for row in data]
+y = [row[-1] for row in data]
+S = ['Ø'] * len(X[0])
+G = [['?' for _ in range(len(X[0]))]]
+for i in range(len(X)):
+    if y[i] == 'Yes':  
+        for j in range(len(S)):
+            if S[j] == 'Ø':
+                S[j] = X[i][j]
+            elif S[j] != X[i][j]:
+                S[j] = '?'
+        G = [g for g in G if all(g[k] == '?' or g[k] == S[k] for k in range(len(S)))]
+    else:  
+        new_G = []
+        for g in G:
+            for j in range(len(S)):
+                if S[j] != '?' and S[j] != X[i][j]:
+                    new_h = g.copy()
+                    new_h[j] = S[j]
+                    new_G.append(new_h)
+        G = new_G
+print("Final Most Specific Hypothesis (S):", tuple(S))
+print("Final Most General Hypothesis (G):", [tuple(g) for g in G])
+
+OUTPUT:
+
+Final Most Specific Hypothesis (S): ('High', '?', '?', 'Mild')
+Final Most General Hypothesis (G): [('High', '?', '?', '?')]
