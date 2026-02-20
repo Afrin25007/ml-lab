@@ -1,0 +1,50 @@
+PROGRAM:
+
+import math
+from collections import Counter
+data = [
+    ['High','Yes','Yes','Mild','Yes'],
+    ['High','Yes','No','Mild','Yes'],
+    ['Normal','Yes','Yes','Mild','No'],
+    ['High','No','Yes','Mild','Yes'],
+    ['Normal','No','No','Severe','No']
+]
+
+attributes = ['Fever','Cough','Fatigue','Headache']
+def entropy(rows):
+    counts = Counter(row[-1] for row in rows)
+    total = len(rows)
+    return -sum((c/total)*math.log2(c/total) for c in counts.values())
+def info_gain(rows, index):
+    total_entropy = entropy(rows)
+    values = set(row[index] for row in rows)
+    weighted = sum(
+        (len([r for r in rows if r[index]==v]) / len(rows)) *
+        entropy([r for r in rows if r[index]==v])
+        for v in values
+    )
+    return total_entropy - weighted
+def id3(rows, attrs):
+    labels = [r[-1] for r in rows]
+   
+    if labels.count(labels[0]) == len(labels):
+        return labels[0]
+   
+    if not attrs:
+        return Counter(labels).most_common(1)[0][0]
+   
+    gains = [info_gain(rows, i) for i in range(len(attrs))]
+    best = gains.index(max(gains))
+    tree = {attrs[best]: {}}
+   
+    for v in set(r[best] for r in rows):
+        subset = [r[:best]+r[best+1:] for r in rows if r[best]==v]
+        new_attrs = attrs[:best]+attrs[best+1:]
+        tree[attrs[best]][v] = id3(subset, new_attrs)
+    return tree
+tree = id3(data, attributes)
+print("Decision Tree:", tree)
+
+
+OUTPUT:
+Decision Tree: {'Fever': {'High': 'Yes', 'Normal': 'No'}}
