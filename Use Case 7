@@ -1,0 +1,29 @@
+PROGRAM:
+
+import numpy as np
+data = [5, 9, 8, 4, 7]
+n = 10  
+theta_A = 0.6
+theta_B = 0.5
+for _ in range(15):  
+    weight_A = []
+    weight_B = []
+    for h in data:
+        t = n - h
+        prob_A = (theta_A**h) * ((1-theta_A)**t)
+        prob_B = (theta_B**h) * ((1-theta_B)**t)
+        total = prob_A + prob_B
+        weight_A.append(prob_A / total)
+        weight_B.append(prob_B / total)
+    weight_A = np.array(weight_A)
+    weight_B = np.array(weight_B)
+    theta_A = np.sum(weight_A * data) / (np.sum(weight_A) * n)
+    theta_B = np.sum(weight_B * data) / (np.sum(weight_B) * n)
+print("P(Head | Coin A) =", round(theta_A, 4))
+print("P(Head | Coin B) =", round(theta_B, 4))
+
+
+OUTPUT:
+
+P(Head | Coin A) = 0.7968
+P(Head | Coin B) = 0.5196
