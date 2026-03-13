@@ -1,0 +1,22 @@
+import numpy as np
+def locally_weighted_regression(X, y, query_size, tau):
+    m = len(X)
+    X_b = np.c_[np.ones(m), X]
+    W = np.eye(m)
+    for i in range(m):
+        W[i, i] = np.exp(-(X[i] - query_size)**2 / (2 * tau**2))
+    theta = np.linalg.inv(X_b.T @ W @ X_b) @ (X_b.T @ W @ y)
+    query = np.array([1, query_size])
+    price = query @ theta
+    return price
+X = np.array([1000, 1500, 2000, 2500, 3000])
+y = np.array([200, 300, 400, 500, 600]) 
+house_size = 2200
+tau = 500
+predicted_price = locally_weighted_regression(X, y, house_size, tau)
+print("House Size:", house_size)
+print("Predicted Price:", predicted_price)
+
+OUTPUT: 
+House Size: 2200
+Predicted Price: 439.99999999999955
